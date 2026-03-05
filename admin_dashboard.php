@@ -9,9 +9,9 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] != 1) {
 <h1>Panel Administrador</h1>
 <a href="../SESION/logout.php">Cerrar sesión</a>
 <br>
-<a href="../ADMIN/procesar_turno.php">reserva</a>
+<a href="../ADMIN/reserva_admin.php">reserva</a>
 
-<form action="procesar_turno.php" method="POST">
+<form action="reserva_admin.php" method="POST">
 
 <label>Tipo de cliente:</label>
 <select name="tipo_cliente" required>
@@ -22,3 +22,4 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] != 1) {
 
 <input type="submit" value="Guardar turno">
 </form>
+
