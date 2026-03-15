@@ -9,9 +9,6 @@ if (!isset($_SESSION['idusuario']) ||
     exit;
 }
 
-/* =========================
-   PROCESAR FORMULARIO
-========================= */
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $tipo = $_POST['tipo_cliente'] ?? '';
@@ -33,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $cliente_id = mysqli_insert_id($conexion);
     }
 
-    echo "✅ Cliente ID generado: " . $cliente_id;
+    echo "✅ Cliente ID usado: " . $cliente_id;
 }
 ?>
 
@@ -42,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <form method="POST">
 
     <label>Tipo de cliente:</label>
-    <select name="tipo_cliente" required>
+    <select name="tipo_cliente" id="tipo_cliente" required>
         <option value="">Seleccionar</option>
         <option value="registrado">Cliente registrado</option>
         <option value="anonimo">Cliente anónimo</option>
@@ -50,20 +47,75 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <hr>
 
-    <h3>Cliente registrado</h3>
-    <input type="number" name="cliente_id" 
-           placeholder="ID Cliente">
+    <!-- CLIENTE REGISTRADO -->
+    <div id="bloque_registrado" style="display:none;">
+        <h3>Cliente registrado</h3>
+        <input type="name" name="nomusuario" placeholder="Nombre">
+        <h3>Fecha</h3>
+        <input type="date" name="fechaN" required>
 
-    <hr>
+        <h3>Hora</h3>
+        <select name="hora_id" required>
+            <?php
+            $horas = mysqli_query($conexion, "SELECT idhora, hora FROM hora");
+            while ($h = mysqli_fetch_assoc($horas)) {
+                echo "<option value='{$h['idhora']}'>{$h['hora']}</option>";
+            }
+            ?>
+        </select>
 
-    <h3>Cliente anónimo</h3>
-    <input type="text" name="nombre_anonimo"
-           placeholder="Nombre">
+        <br><br>
+        <input type="submit" value="Reservar">
+    </form>
+    </div>
 
-    <input type="text" name="telefono_anonimo"
-           placeholder="Teléfono">
+    <!-- CLIENTE ANÓNIMO -->
+    <div id="bloque_anonimo" style="display:none;">
+        <h3>Cliente anónimo</h3>
+        <input type="text" name="nombre_anonimo" placeholder="Nombre">
+        <input type="text" name="telefono_anonimo" placeholder="Teléfono">
+        <h3>Fecha</h3>
+        <input type="date" name="fechaN" required>
 
-    <br><br>
+        <h3>Hora</h3>
+        <select name="hora_id" required>
+            <?php
+            $horas = mysqli_query($conexion, "SELECT idhora, hora FROM hora");
+            while ($h = mysqli_fetch_assoc($horas)) {
+                echo "<option value='{$h['idhora']}'>{$h['hora']}</option>";
+            }
+            ?>
+        </select>
+
+        <br><br>
+        <input type="submit" value="Reservar">
+    </form>
+    </div>
+
+    <br>
     <button type="submit">Guardar turno</button>
 
-</form>     
+</form>
+
+<script>
+document.getElementById("tipo_cliente").addEventListener("change", function() {
+
+    let tipo = this.value;
+
+    let registrado = document.getElementById("bloque_registrado");
+    let anonimo = document.getElementById("bloque_anonimo");
+
+    if (tipo === "registrado") {
+        registrado.style.display = "block";
+        anonimo.style.display = "none";
+    } 
+    else if (tipo === "anonimo") {
+        registrado.style.display = "none";
+        anonimo.style.display = "block";
+    } 
+    else {
+        registrado.style.display = "none";
+        anonimo.style.display = "none";
+    }
+});
+</script>
